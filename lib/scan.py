@@ -1,3 +1,21 @@
+"""
+This program search for files or folders, based on the filename or MD5 hash
+    Copyright (C) 2017  Mondei1 - Nicolas
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import os, sys, codecs
 from lib import var, func
 from lib.var import texts_size
@@ -25,6 +43,7 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles):
 
     # Phase 2 - Finally, here I scan all files
     for root, dirs, files in os.walk(path):
+        # File read scan
         if readFiles:
             for file in files:
                 for line in codecs.open(root + "/" + file, "r", encoding='utf-8', errors='ignore').readlines():
@@ -36,31 +55,44 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles):
                             var.texts += root + "/" + file + " (in line " + str(line_cnt) + "), "
                             var.texts_size += 1
                     line_cnt = 0
+        # Dir scan
         if dirScan:
             for dir in dirs:
                 if dir == searchFor:
                     var.dirs += root + "/" + dir + ", "
                     var.dirs_size += 1
+        # Normal scan
         if not dirScan:
             for filee in files:
-                # If the MD5 scan is enabled, the program will calc. the MD5 hash of every file and check if it the same
-                if MD5scan:
-                    sys.stdout.write("\rProgress: " + str(func.getPercent()) + "% (" + str(var.scanned_files) + " / " + str(var.all_files) + ")")
-                    if func.md5sum(root + "/" + filee) == searchFor:
-                        var.founded += ", " + root + "/" + filee
-                        print("\nFound target file: " + root + "b/" + filee)
-                        sys.exit(0)
-                else:
-                    if lowerCase:
-                        if str(filee).lower() == searchFor.lower():
-                            var.founded += ", " + root + "/" + filee
-                            var.founded_size += 1
+                try:
+                    # If the MD5 scan is enabled, the program will calculate the MD5 hash of every file and check if it the same
+                    # MD5 scan
+                    if MD5scan:
+                        sys.stdout.write("\rProgress: " + str(func.getPercent()) + "% (" + str(var.scanned_files) + " / " + str(var.all_files) +")")
+                        md5sum = ""
+                        for blacklist in var.blacklist:
+                            if blacklist == filee:
+                                md5sum = "UNKOWN (file is in blacklist)"
+                        if md5sum == "":
+                            if func.md5sum(root + "/" + filee) == searchFor:
+                                var.founded += ", " + root + "/" + filee
+                                print("\nFound target file: " + root + "/" + filee)
+                                sys.exit(0)
                     else:
-                        if str(filee) == searchFor:
-                            var.founded += ", " + root + "/" + filee
-                            var.founded_size += 1
-                    sys.stdout.write("\rProgress: " + str(func.getPercent()) + "% (" + str(var.scanned_files) + " / " + str(var.all_files) + ") - Founded: " + str(var.founded_size))
-                var.scanned_files += 1
+                        if lowerCase:
+                            if str(filee).lower() == searchFor.lower():
+                                var.founded += ", " + root + "/" + filee
+                                var.founded_size += 1
+                        else:
+                            if str(filee) == searchFor:
+                                var.founded += ", " + root + "/" + filee
+                                var.founded_size += 1
+                        sys.stdout.write("\rProgress: " + str(func.getPercent()) + "% (" + str(var.scanned_files) + " / " + str(var.all_files) + ") - Founded: " + str(var.founded_size))
+                    var.scanned_files += 1
+                except FileNotFoundError:
+                    pass
+                except OSError:
+                    pass
 
     # Phase 3 - Print all founded files
     if not dirScan or not readFiles:

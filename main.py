@@ -1,7 +1,11 @@
 import sys
 
-from lib.scan import scan
-from lib.var import *
+try:
+    from lib.scan import scan
+    from lib.var import *
+except ImportError:
+    print("\033[1mPlease run this script with python3 or higher! (Tested under python3.5 under Linux)\033[0m")
+    sys.exit(0)
 
 isMD5 = False
 isDirScan = False
@@ -36,7 +40,7 @@ print(OKBLUE + "| $$      | $$| $$|  $$$$$$$   " + BOLD + "   | $$      | $$| $$
 print(OKBLUE + "|__/      |__/|__/ \_______/   " + BOLD + "   |__/      |__/|__/  |__/ \_______/ \_______/|__/      " + ENDC)
 print("                                                                                        ")
 print(BOLD + "By Mondei1")
-print("Version is DEV_1.0\n" + ENDC)
+print("Version is DEV_1.1\n" + ENDC)
 
 # Set booleans
 if sys.argv.__contains__("-md5"):

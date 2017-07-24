@@ -23,3 +23,6 @@ dirs_size = 0
 texts = ""
 texts_total = 0
 texts_size = 0
+
+# This blacklist is for files, where the program can't calculate the MD5 hash!
+blacklist = { "steam.pipe" }
