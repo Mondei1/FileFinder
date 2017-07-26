@@ -15,7 +15,7 @@ This program search for files or folders, based on the filename or MD5 hash
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-import sys
+import sys, glob, readline
 
 try:
     from lib.scan import scan
@@ -23,6 +23,10 @@ try:
 except ImportError:
     print("\033[1mPlease run this script with python3 or higher! (Tested under python3.5 under Linux)\033[0m")
     sys.exit(0)
+
+# Auto-Complete
+def complete(text, state):
+    return (glob.glob(text + '*' + "/") + [None])[state]
 
 isMD5 = False
 isDirScan = False
@@ -62,7 +66,12 @@ print(OKBLUE + "    | $$      | $$| $$|  $$$$$$$   " + BOLD + "   | $$      | $$
 print(OKBLUE + "    |__/      |__/|__/ \_______/   " + BOLD + "   |__/      |__/|__/  |__/ \_______/ \_______/|__/      " + ENDC)
 print("                                                                                        ")
 print(BOLD + "By Mondei1")
-print("Version is DEV_1.2\n" + ENDC)
+print("Version is DEV_1.3\n" + ENDC)
+
+# Set Auto-Complete
+readline.set_completer_delims(' \t\n;')
+readline.parse_and_bind("tab: complete")
+readline.set_completer(complete)
 
 # Set booleans
 if sys.argv.__contains__("-md5"):

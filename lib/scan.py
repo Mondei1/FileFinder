@@ -25,7 +25,8 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan):
 
     # Remove the "/" If it start's with it.
     if str(path).endswith("/"):
-        path = path[:1]
+        if not path == "/":
+            path = path[:-1]
 
     # Phase 1 - To calculate the scan progress I must have the total amount of files/words/folders to calculate the percent number.
     try:
@@ -94,6 +95,7 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan):
         for dir in var.dirs:
             sys.stdout.write("- " + dir + "\n")
         sys.exit(0)
+
     # MD5 scan
     # If the MD5 scan is enabled, the program will calculate the MD5 hash of every file and check if it the same
     if MD5scan:
@@ -108,6 +110,7 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan):
                     if func.md5sum(root + "/" + file) == searchFor:
                         print("\nFound target file: " + root + "/" + file)
                         sys.exit(0)
+                var.files_scanned += 1
 
     # SHA-1 scan
     if sha1Scan:
@@ -151,5 +154,9 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan):
                     pass
                 except OSError:
                     pass
+        print("")
+        print("Files (%s)" % var.founded.__len__() + ":")
+        for found in var.founded:
+            print("- " + found)
     # ---------------------------------------------------------------------
     # Phase 3 - Print all founded files

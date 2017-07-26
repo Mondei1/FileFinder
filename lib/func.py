@@ -37,11 +37,16 @@ def getPercent_dirScan():
         return repr(round((var.dirs_scanned / var.dirs_total) * 100, 2))
 
 def md5sum(filename):
-    with open(filename, mode='rb') as f:
-        d = hashlib.md5()
-        for buf in iter(partial(f.read, 128), b''):
-            d.update(buf)
-    return d.hexdigest()
+    BUF_SIZE = 65536
+    md5 = hashlib.md5()
+
+    with open(filename, 'rb') as f:
+        while True:
+            data = f.read(BUF_SIZE)
+            if not data:
+                break
+            md5.update(data)
+    return md5.hexdigest()
 
 def sha1(filename):
     BUF_SIZE = 65536
@@ -54,6 +59,18 @@ def sha1(filename):
                 break
             sha1.update(data)
     return sha1.hexdigest()
+
+def sha256(filename):
+    BUF_SIZE = 65536
+    sha256 = hashlib.sha256()
+
+    with open(filename, 'rb') as f:
+        while True:
+            data = f.read(BUF_SIZE)
+            if not data:
+                break
+            sha256.update(data)
+    return sha256.hexdigest()
 
 def isNormal(MD5scan, dirScan, readFiles, sha1Scan):
     boolean = True
