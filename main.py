@@ -1,3 +1,20 @@
+"""
+This program search for files or folders, based on the filename or MD5 hash
+    Copyright (C) 2017  Mondei1 - Nicolas
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
 import sys
 
 try:
@@ -11,7 +28,7 @@ isMD5 = False
 isDirScan = False
 isLowerCase = True
 isReadFiles = False
-
+isSha1 = False
 # Args check
 if sys.argv.__contains__("-help") or sys.argv.__contains__("?"):
     print("Here a an list of arguments:")
@@ -19,36 +36,47 @@ if sys.argv.__contains__("-help") or sys.argv.__contains__("?"):
     print("Arguments:")
     print(" -help OR ?  --> to see this")
     print(" -md5        --> To start the file scan based on one MD5 hash.")
-    print(" -dl         --> The program will not lower case your file name.")
+    print(" -sha1       --> To start the file scan based on one sha1 hash.")
+    print(" -l         --> The program will not lower case your file name.")
     print(" -dir        --> Show's you folders and files with the filename.")
     print(" -r          --> This will read and scan the content of every file")
     sys.exit(0)
 
 if sys.argv.__contains__("-md5"):
-    if sys.argv.__contains__("-dl") or sys.argv.__contains__("-dir") or sys.argv.__contains__("-r"):
-        print(RED + BOLD + "If you are enable the MD5 scan, you can't enable other scan's!" + ENDC)
+    if sys.argv.__contains__("-l") or sys.argv.__contains__("-dir") or sys.argv.__contains__("-r"):
+        print(RED + BOLD + "You can't enable other scan's! Only one!" + ENDC)
+        sys.exit(0)
+if sys.argv.__contains__("-sha1"):
+    if sys.argv.__contains__("-l") or sys.argv.__contains__("-dir") or sys.argv.__contains__("-r") or sys.argv.__contains__("-md5"):
+        print(RED + BOLD + "You can't enable other scan's! Only one!!" + ENDC)
         sys.exit(0)
 
 print("")
-print(OKBLUE + " /$$$$$$$$ /$$ /$$             " + BOLD + "    /$$$$$$$$ /$$                 /$$                    " + ENDC)
-print(OKBLUE + "| $$_____/|__/| $$             " + BOLD + "   | $$_____/|__/                | $$                    " + ENDC)
-print(OKBLUE + "| $$       /$$| $$  /$$$$$$    " + BOLD + "   | $$       /$$ /$$$$$$$   /$$$$$$$  /$$$$$$   /$$$$$$ " + ENDC)
-print(OKBLUE + "| $$$$$   | $$| $$ /$$__  $$   " + BOLD + "   | $$$$$   | $$| $$__  $$ /$$__  $$ /$$__  $$ /$$__  $$" + ENDC)
-print(OKBLUE + "| $$__/   | $$| $$| $$$$$$$$   " + BOLD + "   | $$__/   | $$| $$  \ $$| $$  | $$| $$$$$$$$| $$  \__/" + ENDC)
-print(OKBLUE + "| $$      | $$| $$| $$_____/   " + BOLD + "   | $$      | $$| $$  | $$| $$  | $$| $$_____/| $$      " + ENDC)
-print(OKBLUE + "| $$      | $$| $$|  $$$$$$$   " + BOLD + "   | $$      | $$| $$  | $$|  $$$$$$$|  $$$$$$$| $$      " + ENDC)
-print(OKBLUE + "|__/      |__/|__/ \_______/   " + BOLD + "   |__/      |__/|__/  |__/ \_______/ \_______/|__/      " + ENDC)
+print(OKBLUE + "     /$$$$$$$$ /$$ /$$             " + BOLD + "    /$$$$$$$$ /$$                 /$$                    " + ENDC)
+print(OKBLUE + "    | $$_____/|__/| $$             " + BOLD + "   | $$_____/|__/                | $$                    " + ENDC)
+print(OKBLUE + "    | $$       /$$| $$  /$$$$$$    " + BOLD + "   | $$       /$$ /$$$$$$$   /$$$$$$$  /$$$$$$   /$$$$$$ " + ENDC)
+print(OKBLUE + "    | $$$$$   | $$| $$ /$$__  $$   " + BOLD + "   | $$$$$   | $$| $$__  $$ /$$__  $$ /$$__  $$ /$$__  $$" + ENDC)
+print(OKBLUE + "    | $$__/   | $$| $$| $$$$$$$$   " + BOLD + "   | $$__/   | $$| $$  \ $$| $$  | $$| $$$$$$$$| $$  \__/" + ENDC)
+print(OKBLUE + "    | $$      | $$| $$| $$_____/   " + BOLD + "   | $$      | $$| $$  | $$| $$  | $$| $$_____/| $$      " + ENDC)
+print(OKBLUE + "    | $$      | $$| $$|  $$$$$$$   " + BOLD + "   | $$      | $$| $$  | $$|  $$$$$$$|  $$$$$$$| $$      " + ENDC)
+print(OKBLUE + "    |__/      |__/|__/ \_______/   " + BOLD + "   |__/      |__/|__/  |__/ \_______/ \_______/|__/      " + ENDC)
 print("                                                                                        ")
 print(BOLD + "By Mondei1")
-print("Version is DEV_1.1\n" + ENDC)
+print("Version is DEV_1.2\n" + ENDC)
 
 # Set booleans
 if sys.argv.__contains__("-md5"):
-    filename = input("Enter MD5 of file your looking for: ")
+    filename = input("Enter MD5 of your file: ")
     if len(filename) < 32 or len(filename) > 32:
         print(RED + "This isn't an MD5 hash! An MD5 hash has a length of 32 characters!" + ENDC)
         sys.exit(0)
     isMD5 = True
+elif sys.argv.__contains__("-sha1"):
+    filename = input("Enter SHA1 of your file: ")
+    if len(filename) < 40 or len(filename) > 40:
+        print(RED + "This isn't an SHA1 hash! An SHA1 hash has a length of 40 characters!" + ENDC)
+        sys.exit(0)
+    isSha1 = True
 elif sys.argv.__contains__("-dir"):
     isDirScan = True
     filename = input("Please enter your folder name: ")
@@ -57,12 +85,12 @@ elif sys.argv.__contains__("-r"):
     filename = input("Enter ONE word that you search: ")
 else:
     filename = input("Please enter file name: ")
-if sys.argv.__contains__("-dl"):
+if sys.argv.__contains__("-l"):
     isLowerCase = False
 
 print("")
 path = input("Please enter path: ")
 try:
-    scan(filename, path, MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles)
+    scan(filename, path, MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles, sha1Scan=isSha1)
 except KeyboardInterrupt:
     print(BOLD + RED + "Exit" + ENDC)
