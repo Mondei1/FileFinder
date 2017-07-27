@@ -33,6 +33,7 @@ isDirScan = False
 isLowerCase = True
 isReadFiles = False
 isSha1 = False
+isSHA256 = False
 # Args check
 if sys.argv.__contains__("-help") or sys.argv.__contains__("?"):
     print("Here a an list of arguments:")
@@ -41,7 +42,8 @@ if sys.argv.__contains__("-help") or sys.argv.__contains__("?"):
     print(" -help OR ?  --> to see this")
     print(" -md5        --> To start the file scan based on one MD5 hash.")
     print(" -sha1       --> To start the file scan based on one sha1 hash.")
-    print(" -l         --> The program will not lower case your file name.")
+    print(" -sha256     --> To start the file scan based on one sha256 hash.")
+    print(" -l          --> The program will not lower case your file name.")
     print(" -dir        --> Show's you folders and files with the filename.")
     print(" -r          --> This will read and scan the content of every file")
     sys.exit(0)
@@ -52,6 +54,10 @@ if sys.argv.__contains__("-md5"):
         sys.exit(0)
 if sys.argv.__contains__("-sha1"):
     if sys.argv.__contains__("-l") or sys.argv.__contains__("-dir") or sys.argv.__contains__("-r") or sys.argv.__contains__("-md5"):
+        print(RED + BOLD + "You can't enable other scan's! Only one!!" + ENDC)
+        sys.exit(0)
+if sys.argv.__contains__("-sha256"):
+    if sys.argv.__contains__("-l") or sys.argv.__contains__("-dir") or sys.argv.__contains__("-r") or sys.argv.__contains__("-md5") or sys.argv.__contains__("-sha1"):
         print(RED + BOLD + "You can't enable other scan's! Only one!!" + ENDC)
         sys.exit(0)
 
@@ -66,7 +72,7 @@ print(OKBLUE + "    | $$      | $$| $$|  $$$$$$$   " + BOLD + "   | $$      | $$
 print(OKBLUE + "    |__/      |__/|__/ \_______/   " + BOLD + "   |__/      |__/|__/  |__/ \_______/ \_______/|__/      " + ENDC)
 print("                                                                                        ")
 print(BOLD + "By Mondei1")
-print("Version is DEV_1.3\n" + ENDC)
+print("Version is DEV_1.4\n" + ENDC)
 
 # Set Auto-Complete
 readline.set_completer_delims(' \t\n;')
@@ -86,6 +92,12 @@ elif sys.argv.__contains__("-sha1"):
         print(RED + "This isn't an SHA1 hash! An SHA1 hash has a length of 40 characters!" + ENDC)
         sys.exit(0)
     isSha1 = True
+elif sys.argv.__contains__("-sha256"):
+    filename = input("Enter SHA256 of your file: ")
+    if len(filename) < 64 or len(filename) > 64:
+        print(RED + "This isn't an SHA256 hash! An SHA256 hash has a length of 64 characters!" + ENDC)
+        sys.exit(0)
+    isSHA256 = True
 elif sys.argv.__contains__("-dir"):
     isDirScan = True
     filename = input("Please enter your folder name: ")
@@ -100,6 +112,6 @@ if sys.argv.__contains__("-l"):
 print("")
 path = input("Please enter path: ")
 try:
-    scan(filename, path, MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles, sha1Scan=isSha1)
+    scan(filename, path, MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles, sha1Scan=isSha1, sha256=isSHA256)
 except KeyboardInterrupt:
     print(BOLD + RED + "Exit" + ENDC)

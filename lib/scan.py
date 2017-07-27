@@ -20,8 +20,8 @@ import os, sys, codecs
 from lib import var, func
 
 
-def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan):
-    isNormal = func.isNormal(MD5scan, dirScan, readFiles, sha1Scan)
+def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha256):
+    isNormal = func.isNormal(MD5scan, dirScan, readFiles, sha1Scan, sha256)
 
     # Remove the "/" If it start's with it.
     if str(path).endswith("/"):
@@ -99,21 +99,25 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan):
     # MD5 scan
     # If the MD5 scan is enabled, the program will calculate the MD5 hash of every file and check if it the same
     if MD5scan:
+        stop = False
         for root, files, dirs in os.walk(path):
             for file in dirs:
                 sys.stdout.write("\rProgress: " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(var.all_files) + ")")
                 md5sum = ""
                 for blacklist in var.blacklist:
                     if blacklist == file:
-                        md5sum = "UNKOWN (file is in blacklist)"
+                        md5sum = "UNKNOWN (file is in blacklist)"
                 if md5sum == "":
                     if func.md5sum(root + "/" + file) == searchFor:
-                        print("\nFound target file: " + root + "/" + file)
-                        sys.exit(0)
+                        print(var.BOLD + "\nFound target file: " + root + "/" + file + var.ENDC)
+                        stop = True
                 var.files_scanned += 1
+            if stop:
+                break
 
     # SHA-1 scan
     if sha1Scan:
+        stop = False
         for root, dirs, files in os.walk(path):
             for file in files:
                 try:
@@ -123,11 +127,11 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan):
                     sha1sum = ""
                     for blacklist in var.blacklist:
                         if blacklist == file:
-                            sha1sum = "UNKOWN (file is in blacklist)"
+                            sha1sum = "UNKNOWN (file is in blacklist)"
                     if sha1sum == "":
                         if func.sha1(root + "/" + file) == searchFor:
-                            print("\nFound target file: " + root + "/" + file)
-                            sys.exit(0)
+                            print(var.BOLD + "\nFound target file: " + root + "/" + file + var.ENDC)
+                            stop = True
                     var.files_scanned += 1
                 except FileNotFoundError:
                     var.files_scanned += 1
@@ -136,6 +140,38 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan):
                 except OSError:
                     var.files_scanned += 1
                     var.skipped_files.append(root + "/" + file)
+            if stop:
+                break
+
+    # SHA-256 scan
+    if sha256:
+        stop = False
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                try:
+                    sys.stdout.write(
+                        "\rProgress: " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(
+                            var.all_files) + ")")
+                    sha256sum = ""
+                    for blacklist in var.blacklist:
+                        if blacklist == file:
+                            var.skipped_files.append(root + "/"+ file + " (File is in blacklist)")
+                            sha256sum = "UNKNOWN (file is in blacklist)"
+                    if sha256sum == "":
+                        if func.sha256(root + "/" + file) == searchFor:
+                            print(var.BOLD + "\nFound target file: " + root + "/" + file + var.ENDC)
+                            stop = True
+                            break
+                    var.files_scanned += 1
+                except FileNotFoundError:
+                    var.files_scanned += 1
+                    var.skipped_files.append(root + "/" + file + " (FileNotFoundError)")
+                    pass
+                except OSError:
+                    var.files_scanned += 1
+                    var.skipped_files.append(root + "/" + file + " (OSError --> No permissions)")
+            if stop:
+                break
 
     # Normal scan
     if isNormal:
@@ -159,4 +195,7 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan):
         for found in var.founded:
             print("- " + found)
     # ---------------------------------------------------------------------
-    # Phase 3 - Print all founded files
+    # Phase 3 - Print all skipped files
+    print("Skipped files (%s)" % var.skipped_files.__len__())
+    for skipped in var.skipped_files:
+        print("- "+ skipped)

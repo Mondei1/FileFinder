@@ -72,14 +72,16 @@ def sha256(filename):
             sha256.update(data)
     return sha256.hexdigest()
 
-def isNormal(MD5scan, dirScan, readFiles, sha1Scan):
+def isNormal(MD5scan, dirScan, readFiles, sha1Scan, sha256):
     boolean = True
     if MD5scan:
-        isNormal = False
+        boolean = False
     elif dirScan:
-        isNormal = False
+        boolean = False
     elif readFiles:
-        isNormal = False
+        boolean = False
     elif sha1Scan:
-        isNormal = False
+        boolean = False
+    elif sha256:
+        boolean = False
     return boolean
