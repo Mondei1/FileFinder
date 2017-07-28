@@ -18,6 +18,7 @@ This program search for files or folders, based on the filename or MD5 hash
 
 import os, sys, codecs
 from lib import var, func
+from lib.lang.lang import *
 
 
 def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha256):
@@ -31,24 +32,27 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha2
     # Phase 1 - To calculate the scan progress I must have the total amount of files/words/folders to calculate the percent number.
     try:
         if not dirScan and not readFiles:
+            message = getByID("Calc_Amount_Of_Files")
             for root, dirs, files in os.walk(path):
                 for file in files:
-                    sys.stdout.write("\rCalculate how many files are exists (" + str(var.all_files) + ")...")
+                    sys.stdout.write("\r" + message + " (" + str(var.all_files) + ") ...")
                     var.all_files += 1
         # Scan based on words
         if readFiles:
+            message = getByID("Calc_Amount_Of_Words")
             for root, dirs, files in os.walk(path):
                 for file in files:
                     for line in codecs.open(root + "/" + file, "r", encoding='utf-8', errors='ignore').readlines():
-                        sys.stdout.write("\rCalculate how many words are exists (" + str(var.words_total) + ")...")
                         words = line.split(" ")
                         for words in words:
                             var.words_total += 1
+                            sys.stdout.write("\r" + message + " (" + str(var.words_total) + ") ...")
         # Check how many dir's exists
         if dirScan:
+            message = getByID("Calc_Amount_Of_Dirs")
             for root, dirs, files in os.walk(path):
                 for dir in dirs:
-                    sys.stdout.write("\rCalculate how many folders are exists (" + str(var.dirs_total) + ") ...")
+                    sys.stdout.write("\r" + message + " (" + str(var.dirs_total) + ") ...")
                     var.dirs_total += 1
     except KeyboardInterrupt:
         var.skipped = True
@@ -75,7 +79,7 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha2
                         if word.lower() == searchFor.lower():
                             var.texts.append(root + "/" + file + " (in line " + str(line_cnt - 1) + "), ")
         print("")
-        print("Text (" + str(len(var.texts)) + "):")
+        print(getByID("Word_Text") + " (" + str(len(var.texts)) + "):")
         for found in var.texts:
             print("- " + found)
         sys.exit(0)
@@ -83,15 +87,17 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha2
 
     # Dir scan
     if dirScan:
+        progress = getByID("Word_Progress")
+        founded = getByID("Word_Founded")
         for root, dirs, files in os.walk(path):
             for dir in dirs:
-                sys.stdout.write("\rProgress: " + str(func.getPercent_dirScan()) + "% (" + str(var.dirs_scanned) + " / " + str(
-                    var.dirs_total) + ") - Founded: " + str(len(var.dirs)))
+                sys.stdout.write("\r" + progress + ": " + str(func.getPercent_dirScan()) + "% (" + str(var.dirs_scanned) + " / " + str(
+                    var.dirs_total) + ") - " + founded +": " + str(len(var.dirs)))
                 if dir.lower() == searchFor.lower():
                     var.dirs.append(root + "/" + dir)
                 var.dirs_scanned += 1
 
-        print("\nDir(s) (" + str(len(var.dirs)) + "):")
+        print("\n" + getByID("Word_Dirs") + " (" + str(len(var.dirs)) + "):")
         for dir in var.dirs:
             sys.stdout.write("- " + dir + "\n")
         sys.exit(0)
@@ -99,67 +105,80 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha2
     # MD5 scan
     # If the MD5 scan is enabled, the program will calculate the MD5 hash of every file and check if it the same
     if MD5scan:
+        progress = getByID("Word_Progress")
         stop = False
         for root, files, dirs in os.walk(path):
             for file in dirs:
-                sys.stdout.write("\rProgress: " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(var.all_files) + ")")
-                md5sum = ""
-                for blacklist in var.blacklist:
-                    if blacklist == file:
-                        md5sum = "UNKNOWN (file is in blacklist)"
-                if md5sum == "":
-                    if func.md5sum(root + "/" + file) == searchFor:
-                        print(var.BOLD + "\nFound target file: " + root + "/" + file + var.ENDC)
-                        stop = True
-                var.files_scanned += 1
+                try:
+                    sys.stdout.write("\r" + progress + ": " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(var.all_files) + ")")
+                    md5sum = ""
+                    for blacklist in var.blacklist:
+                        if blacklist == file:
+                            md5sum = "UNKNOWN (file is in blacklist)"
+                            var.skipped_files.append(root + "/" + file + " (" + getByID("File_In_Blacklist") + ")")
+                    if md5sum == "":
+                        if func.md5sum(root + "/" + file) == searchFor:
+                            print(var.BOLD + "\n" + getByID("Found_Target_File") + root + "/" + file + var.ENDC)
+                            stop = True
+                    var.files_scanned += 1
+                except FileNotFoundError:
+                    var.files_scanned += 1
+                    var.skipped_files.append(root + "/" + file + " (FileNotFoundError)")
+                    pass
+                except OSError:
+                    var.files_scanned += 1
+                    var.skipped_files.append(root + "/" + file + " (OSError --> " + getByID("No_Permissions") + ")")
             if stop:
                 break
 
     # SHA-1 scan
     if sha1Scan:
+        progress = getByID("Word_Progress")
         stop = False
         for root, dirs, files in os.walk(path):
             for file in files:
                 try:
                     sys.stdout.write(
-                        "\rProgress: " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(
+                        "\r" + progress + ": " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(
                             var.all_files) + ")")
                     sha1sum = ""
                     for blacklist in var.blacklist:
                         if blacklist == file:
                             sha1sum = "UNKNOWN (file is in blacklist)"
+                            var.skipped_files.append(root + "/" + file + " (" + getByID("File_In_Blacklist") + ")")
                     if sha1sum == "":
                         if func.sha1(root + "/" + file) == searchFor:
-                            print(var.BOLD + "\nFound target file: " + root + "/" + file + var.ENDC)
+                            print(var.BOLD + "\n" + getByID("Found_Target_File") + root + "/" + file + var.ENDC)
                             stop = True
                     var.files_scanned += 1
                 except FileNotFoundError:
                     var.files_scanned += 1
-                    var.skipped_files.append(root + "/" + file)
+                    var.skipped_files.append(root + "/" + file + " (FileNotFoundError)")
                     pass
                 except OSError:
                     var.files_scanned += 1
-                    var.skipped_files.append(root + "/" + file)
+                    var.skipped_files.append(root + "/" + file + " (OSError --> " + getByID("No_Permissions") + ")")
             if stop:
                 break
 
     # SHA-256 scan
     if sha256:
+        progress = getByID("Word_Progress")
         stop = False
         for root, dirs, files in os.walk(path):
             for file in files:
                 try:
                     sys.stdout.write(
-                        "\rProgress: " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(
+                        "\r" + progress + ": " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(
                             var.all_files) + ")")
                     sha256sum = ""
                     for blacklist in var.blacklist:
                         if blacklist == file:
-                            var.skipped_files.append(root + "/"+ file + " (File is in blacklist)")
+                            var.skipped_files.append(root + "/" + file + " (" + getByID("File_In_Blacklist") + ")")
                             sha256sum = "UNKNOWN (file is in blacklist)"
                     if sha256sum == "":
                         if func.sha256(root + "/" + file) == searchFor:
-                            print(var.BOLD + "\nFound target file: " + root + "/" + file + var.ENDC)
+                            print(var.BOLD + "\n" + getByID("Found_Target_File") + ": " + root + "/" + file + var.ENDC)
                             stop = True
                             break
                     var.files_scanned += 1
@@ -169,12 +188,13 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha2
                     pass
                 except OSError:
                     var.files_scanned += 1
-                    var.skipped_files.append(root + "/" + file + " (OSError --> No permissions)")
+                    var.skipped_files.append(root + "/" + file + " (OSError --> " + getByID("No_Permissions") + ")")
             if stop:
                 break
 
     # Normal scan
     if isNormal:
+        progress = getByID("Word_Progress")
         for root, dirs, files in os.walk(path):
             for file in files:
                 try:
@@ -184,18 +204,22 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha2
                     else:
                         if str(file) == searchFor:
                             var.founded.append(root + "/" + file)
-                    sys.stdout.write("\rProgress: " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(var.all_files) + ") - Founded: " + str(len(var.founded)))
+                    sys.stdout.write("\r" + progress + ": " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(var.all_files) + ") - Founded: " + str(len(var.founded)))
                     var.files_scanned += 1
                 except FileNotFoundError:
+                    var.files_scanned += 1
+                    var.skipped_files.append(root + "/" + file + " (FileNotFoundError)")
                     pass
                 except OSError:
-                    pass
+                    var.files_scanned += 1
+                    var.skipped_files.append(root + "/" + file + " (OSError --> " + getByID("No_Permissions") + ")")
         print("")
-        print("Files (%s)" % var.founded.__len__() + ":")
+        print(getByID("Word_Files") + "(%s)" % var.founded.__len__() + ":")
         for found in var.founded:
             print("- " + found)
     # ---------------------------------------------------------------------
     # Phase 3 - Print all skipped files
-    print("Skipped files (%s)" % var.skipped_files.__len__())
+    print("")
+    print(getByID("Word_Skipped_Files") + "(%s)" % var.skipped_files.__len__() + ":")
     for skipped in var.skipped_files:
         print("- "+ skipped)

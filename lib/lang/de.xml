@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Language file for german.
+    Translation from english to german by Mondei1
+-->
+<lang>
+    <!-- INPUT -->
+    <de id="Enter_File_Name">Gebe den Dateinamen ein: </de>
+    <de id="Enter_Path">Gebe den Pfad ein (optional): </de>
+    <de id="Enter_MD5">Gebe den MD5 Hash ein: </de>
+    <de id="Enter_SHA256">Gebe den SHA256 Hash ein: </de>
+    <de id="Enter_SHA1">Gebe den SHA1 Hash ein: </de>
+    <de id="Enter_Dir_Name">Gebe den Ordner Namen ein: </de>
+    <de id="Enter_One_Word">Gebe ein Wort ein das du suchst: </de>
+
+    <!-- OUTPUT -->
+    <de id="Calc_Amount_Of_Files">Berechne wie viele Dateien existieren</de>
+    <de id="Calc_Amount_Of_Words">Berechne wie viele Wörter existieren</de>
+    <de id="Calc_Amount_Of_Dirs">Berechne wie viele Ordner existieren</de>
+    <de id="File_In_Blacklist">Datei ist in der Schwarzen Liste</de>
+    <de id="Found_Target_File">Zieldatei gefunden: </de>
+
+    <!-- WORDS -->
+    <de id="Word_Progress">Fortschritt</de>
+    <de id="Word_Founded">Gefunden</de>
+    <de id="Word_Scan_Skipped">Übersprungen!</de>
+    <de id="Word_Files">Dateien</de>
+    <de id="Word_Dirs">Ordner</de>
+    <de id="Word_Skipped_Files">Übersprungene Dateien</de>
+    <de id="Word_Text">Text</de>
+    <de id="No_Permissions">Keine Rechte</de>
+</lang>

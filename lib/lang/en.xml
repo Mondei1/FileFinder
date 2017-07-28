@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Language file for english.
+    By Mondei1
+-->
+<lang>
+    <!-- INPUT -->
+    <en id="Enter_File_Name">Enter file name: </en>
+    <en id="Enter_Path">Enter Path (optional): </en>
+    <en id="Enter_MD5">Enter MD5 of your file:</en>
+    <en id="Enter_SHA256">Enter SHA256 of your file: </en>
+    <en id="Enter_SHA1">Enter SHA1 of your file: </en>
+    <en id="Enter_Dir_Name">Enter folder name: </en>
+    <en id="Enter_One_Word">Enter one word that you search: </en>
+
+    <!-- OUTPUT -->
+    <en id="Calc_Amount_Of_Files">Calculate how many files are exists</en>
+    <en id="Calc_Amount_Of_Words">Calculate how many words are exists</en>
+    <en id="Calc_Amount_Of_Dirs">Calculate how many folders are exists</en>
+    <en id="File_In_Blacklist">File is in blacklist</en>
+    <en id="Found_Target_File">Found target file: </en>
+
+    <!-- WORDS -->
+    <en id="Word_Progress">Progress</en>
+    <en id="Word_Founded">Founded</en>
+    <en id="Word_Scan_Skipped">Skipped!</en>
+    <en id="Word_Files">Files</en>
+    <en id="Word_Dirs">Dirs</en>
+    <en id="Word_Skipped_Files">Skipped files</en>
+    <en id="Word_Text">Text</en>
+    <en id="No_Permissions">No permissions</en>
+</lang>
