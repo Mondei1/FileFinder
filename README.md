@@ -20,7 +20,7 @@ But is something not working please write me via E-Mail (`emailchecker000@gmail.
 ## Stable version
 **None!** Every version is an developer build and can be very unstable. But some scan's work pretty good!
 
-### Help
+## Help
 ***Translate*** - Translate everything from english to French/Russian/Chinese/Danish/...
 
 ***Developing*** - Programming new features or make my poor code better ^^
