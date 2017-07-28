@@ -22,6 +22,7 @@ import sys
 try:
     from lib.scan import scan
     from lib.var import *
+    from lib.func import *
     from lib.lang.lang import *
 except ImportError:
     print("\033[1mPlease run this script with python3 or higher! (Tested under python3.5 under Linux)\033[0m")
@@ -75,8 +76,23 @@ print(OKBLUE + "    | $$      | $$| $$|  $$$$$$$   " + BOLD + "   | $$      | $$
 print(OKBLUE + "    |__/      |__/|__/ \_______/   " + BOLD + "   |__/      |__/|__/  |__/ \_______/ \_______/|__/      " + ENDC)
 print("                                                                                        ")
 print(BOLD + "By Mondei1")
-print("Version is DEV_1.5\n" + ENDC)
+print("Version is DEV_1.6\n" + ENDC)
 
+# Set ignored files/folders
+try:
+    with open(".ignore-files", 'r') as f:
+        for line in f.readlines():
+            line = line.replace("\n", "")
+            ignore_Files.append(line)
+except FileNotFoundError:
+    pass
+try:
+    with open(".ignore-folders", 'r') as f:
+        for line in f.readlines():
+            line = line.replace("\n", "")
+            ignore_Folders.append(line)
+except FileNotFoundError:
+    pass
 # Set Auto-Complete
 readline.set_completer_delims(' \t\n;')
 readline.parse_and_bind("tab: complete")
@@ -86,19 +102,19 @@ readline.set_completer(complete)
 if sys.argv.__contains__("-md5"):
     filename = input(getByID("Enter_MD5"))
     if len(filename) < 32 or len(filename) > 32:
-        print(RED + "This isn't an MD5 hash! An MD5 hash has a length of 32 characters!" + ENDC)
+        print(RED + getByID("Not_An_MD5_Hash") + ENDC)
         sys.exit(0)
     isMD5 = True
 elif sys.argv.__contains__("-sha1"):
     filename = input(getByID("Enter_SHA1"))
     if len(filename) < 40 or len(filename) > 40:
-        print(RED + "This isn't an SHA1 hash! An SHA1 hash has a length of 40 characters!" + ENDC)
+        print(RED + getByID("Not_An_SHA1_Hash") + ENDC)
         sys.exit(0)
     isSha1 = True
 elif sys.argv.__contains__("-sha256"):
     filename = input(getByID("Enter_SHA256"))
     if len(filename) < 64 or len(filename) > 64:
-        print(RED + "This isn't an SHA256 hash! An SHA256 hash has a length of 64 characters!" + ENDC)
+        print(RED + getByID("Not_An_SHA256_Hash") + ENDC)
         sys.exit(0)
     isSHA256 = True
 elif sys.argv.__contains__("-dir"):
@@ -112,8 +128,16 @@ else:
 if sys.argv.__contains__("-l"):
     isLowerCase = False
 
+if ignore_Files.__contains__(filename) or ignore_Folders.__contains__(filename):
+    if isNormal(MD5scan=isMD5, dirScan=isDirScan, readFiles=isReadFiles, sha1Scan=isSha1, sha256=isSHA256):
+        print(BOLD + RED + getByID("File_Search_Is_Pointless") + ENDC)
+    if isDirScan:
+        print(BOLD + RED + getByID("Dir_Search_Is_Pointless") + ENDC)
+
 print("")
 path = input(getByID("Enter_Path"))
+if path == "":
+    path = "/"
 try:
     scan(filename, path, MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles, sha1Scan=isSha1, sha256=isSHA256)
 except KeyboardInterrupt:

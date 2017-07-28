@@ -17,8 +17,19 @@
     <de id="Calc_Amount_Of_Files">Berechne wie viele Dateien existieren</de>
     <de id="Calc_Amount_Of_Words">Berechne wie viele Wörter existieren</de>
     <de id="Calc_Amount_Of_Dirs">Berechne wie viele Ordner existieren</de>
-    <de id="File_In_Blacklist">Datei ist in der Schwarzen Liste</de>
     <de id="Found_Target_File">Zieldatei gefunden: </de>
+
+    <!-- SKIPPED REASONS -->
+    <de id="File_In_Blacklist">Datei ist in der Schwarzen Liste</de>
+    <de id="Folder_Ignored">Dieser Ornder wurde ignoriert</de>
+    <de id="File_Ignored">Diese Datei wurde ignoriert</de>
+
+    <!-- WARNINGS -->
+    <en id="File_Search_Is_Pointless">Diese Suche ist Sinnlos! Weil die Datei die du suchst ist in '.ignore-files' und wird ignoriert!</en>
+    <en id="Dir_Search_Is_Pointless">Diese Suche ist Sinnlos! Weil der Ornder den du suchst ist in '.ignore-folders' und wird ignoriert!</en>
+    <en id="Not_An_MD5_Hash">Das ist kein MD5 Hash! Ein MD5 Hash hat eine Länge von 32 Zeichen!</en>
+    <en id="Not_An_SHA1_Hash">Das ist kein SHA1 Hash! Ein SHA1 Hash hat eine Länge von 40 Zeichen!</en>
+    <en id="Not_An_SHA256_Hash">Das ist kein SHA256 Hash! Ein SHA256 Hash hat eine Länge von 64 Zeichen!</en>
 
     <!-- WORDS -->
     <de id="Word_Progress">Fortschritt</de>

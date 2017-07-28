@@ -89,34 +89,44 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha2
     if dirScan:
         progress = getByID("Word_Progress")
         founded = getByID("Word_Founded")
+        passs = False
         for root, dirs, files in os.walk(path):
             for dir in dirs:
                 sys.stdout.write("\r" + progress + ": " + str(func.getPercent_dirScan()) + "% (" + str(var.dirs_scanned) + " / " + str(
                     var.dirs_total) + ") - " + founded +": " + str(len(var.dirs)))
-                if dir.lower() == searchFor.lower():
+                if var.ignore_Folders.__contains__(dir):
+                    var.skipped_files.append(root + "/" + dir + " (" + getByID("Folder_Ignored") + ")")
+                    passs = True
+                if dir.lower() == searchFor.lower() and passs is False:
                     var.dirs.append(root + "/" + dir)
                 var.dirs_scanned += 1
 
         print("\n" + getByID("Word_Dirs") + " (" + str(len(var.dirs)) + "):")
         for dir in var.dirs:
             sys.stdout.write("- " + dir + "\n")
-        sys.exit(0)
 
     # MD5 scan
     # If the MD5 scan is enabled, the program will calculate the MD5 hash of every file and check if it the same
     if MD5scan:
         progress = getByID("Word_Progress")
         stop = False
+        passs = False
         for root, files, dirs in os.walk(path):
             for file in dirs:
                 try:
                     sys.stdout.write("\r" + progress + ": " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(var.all_files) + ")")
                     md5sum = ""
+                    # If file is in blacklist
                     for blacklist in var.blacklist:
                         if blacklist == file:
-                            md5sum = "UNKNOWN (file is in blacklist)"
                             var.skipped_files.append(root + "/" + file + " (" + getByID("File_In_Blacklist") + ")")
-                    if md5sum == "":
+                            sha256sum = "UNKNOWN (file is in blacklist)"
+
+                    # If file is in '.ignore-files'
+                    if var.ignore_Files.__contains__(file):
+                        var.skipped_files.append(root + "/" + file + " (" + getByID("File_Ignored") + ")")
+                        passs = True
+                    if md5sum == "" and passs is False:
                         if func.md5sum(root + "/" + file) == searchFor:
                             print(var.BOLD + "\n" + getByID("Found_Target_File") + root + "/" + file + var.ENDC)
                             stop = True
@@ -135,6 +145,7 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha2
     if sha1Scan:
         progress = getByID("Word_Progress")
         stop = False
+        passs = False
         for root, dirs, files in os.walk(path):
             for file in files:
                 try:
@@ -142,11 +153,17 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha2
                         "\r" + progress + ": " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(
                             var.all_files) + ")")
                     sha1sum = ""
+                    # If file is in blacklist
                     for blacklist in var.blacklist:
                         if blacklist == file:
-                            sha1sum = "UNKNOWN (file is in blacklist)"
                             var.skipped_files.append(root + "/" + file + " (" + getByID("File_In_Blacklist") + ")")
-                    if sha1sum == "":
+                            sha256sum = "UNKNOWN (file is in blacklist)"
+
+                    # If file is in '.ignore-files'
+                    if var.ignore_Files.__contains__(file):
+                        var.skipped_files.append(root + "/" + file + " (" + getByID("File_Ignored") + ")")
+                        passs = True
+                    if sha1sum == "" and passs is False:
                         if func.sha1(root + "/" + file) == searchFor:
                             print(var.BOLD + "\n" + getByID("Found_Target_File") + root + "/" + file + var.ENDC)
                             stop = True
@@ -172,10 +189,17 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha2
                         "\r" + progress + ": " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(
                             var.all_files) + ")")
                     sha256sum = ""
+
+                    # If file is in blacklist
                     for blacklist in var.blacklist:
                         if blacklist == file:
                             var.skipped_files.append(root + "/" + file + " (" + getByID("File_In_Blacklist") + ")")
                             sha256sum = "UNKNOWN (file is in blacklist)"
+
+                    # If file is in '.ignore-files'
+                    if var.ignore_Files.__contains__(file):
+                        var.skipped_files.append(root + "/" + file + " (" + getByID("File_Ignored") + ")")
+                        pass
                     if sha256sum == "":
                         if func.sha256(root + "/" + file) == searchFor:
                             print(var.BOLD + "\n" + getByID("Found_Target_File") + ": " + root + "/" + file + var.ENDC)
@@ -195,15 +219,21 @@ def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha2
     # Normal scan
     if isNormal:
         progress = getByID("Word_Progress")
+        ignored = False
         for root, dirs, files in os.walk(path):
             for file in files:
                 try:
-                    if lowerCase:
-                        if str(file).lower() == searchFor.lower():
-                            var.founded.append(root + "/" + file)
-                    else:
-                        if str(file) == searchFor:
-                            var.founded.append(root + "/" + file)
+                    # If file is in '.ignore-files'
+                    if var.ignore_Files.__contains__(file):
+                        var.skipped_files.append(root + "/" + file + " (" + getByID("File_Ignored") + ")")
+                        ignored = True
+                    if not ignored:
+                        if lowerCase:
+                            if str(file).lower() == searchFor.lower():
+                                var.founded.append(root + "/" + file)
+                        else:
+                            if str(file) == searchFor:
+                                var.founded.append(root + "/" + file)
                     sys.stdout.write("\r" + progress + ": " + str(func.getPercent()) + "% (" + str(var.files_scanned) + " / " + str(var.all_files) + ") - Founded: " + str(len(var.founded)))
                     var.files_scanned += 1
                 except FileNotFoundError:
