@@ -40,29 +40,20 @@ isSha1 = False
 isSHA256 = False
 # Args check
 if sys.argv.__contains__("-help") or sys.argv.__contains__("?"):
-    print("Here a an list of arguments:")
-    print("Syntax: python3.5 main.py [ARGUMENT]\n")
-    print("Arguments:")
-    print(" -help OR ?  --> to see this")
-    print(" -md5        --> To start the file scan based on one MD5 hash.")
-    print(" -sha1       --> To start the file scan based on one sha1 hash.")
-    print(" -sha256     --> To start the file scan based on one sha256 hash.")
-    print(" -l          --> The program will not lower case your file name.")
-    print(" -dir        --> Show's you folders and files with the filename.")
-    print(" -r          --> This will read and scan the content of every file")
+    print(getByID("Help"))
     sys.exit(0)
 
 if sys.argv.__contains__("-md5"):
     if sys.argv.__contains__("-l") or sys.argv.__contains__("-dir") or sys.argv.__contains__("-r"):
-        print(RED + BOLD + "You can't enable other scan's! Only one!" + ENDC)
+        print(RED + BOLD + getByID("Only_One_Scan") + ENDC)
         sys.exit(0)
 if sys.argv.__contains__("-sha1"):
     if sys.argv.__contains__("-l") or sys.argv.__contains__("-dir") or sys.argv.__contains__("-r") or sys.argv.__contains__("-md5"):
-        print(RED + BOLD + "You can't enable other scan's! Only one!" + ENDC)
+        print(RED + BOLD + getByID("Only_One_Scan") + ENDC)
         sys.exit(0)
 if sys.argv.__contains__("-sha256"):
     if sys.argv.__contains__("-l") or sys.argv.__contains__("-dir") or sys.argv.__contains__("-r") or sys.argv.__contains__("-md5") or sys.argv.__contains__("-sha1"):
-        print(RED + BOLD + "You can't enable other scan's! Only one!" + ENDC)
+        print(RED + BOLD + getByID("Only_One_Scan") + ENDC)
         sys.exit(0)
 
 print("")
@@ -76,7 +67,7 @@ print(OKBLUE + "    | $$      | $$| $$|  $$$$$$$   " + BOLD + "   | $$      | $$
 print(OKBLUE + "    |__/      |__/|__/ \_______/   " + BOLD + "   |__/      |__/|__/  |__/ \_______/ \_______/|__/      " + ENDC)
 print("                                                                                        ")
 print(BOLD + "By Mondei1")
-print("Version is DEV_1.6\n" + ENDC)
+print("Version is DEV_1.6.1\n" + ENDC)
 
 # Set ignored files/folders
 try:

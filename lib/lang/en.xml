@@ -24,12 +24,30 @@
     <en id="Folder_Ignored">This folder was ignored</en>
     <en id="File_Ignored">This file was ignored</en>
 
+    <!-- HELP -->
+    <en id="Help">Here a an list of arguments:
+Syntax: python3.5 main.py [ARGUMENT]
+Arguments:
+  -help OR ?  --> to see this
+  -md5        --> To start the file scan based on one MD5 hash.
+  -sha1       --> To start the file scan based on one sha1 hash.
+  -sha256     --> To start the file scan based on one sha256 hash.
+  -l          --> The program will not lower case your file name.
+  -dir        --> Show's you folders and files with the filename.
+  -r          --> This will read and scan the content of every file
+
+  You can create a file with the name '.ignore-files' to skip files.
+  And you can create a file with the name '.ignore-folders' to skip folders.
+  Write only one name in every line!
+    </en>
+
     <!-- WARNINGS -->
     <en id="File_Search_Is_Pointless">This search is pointless! Because your file that you search is in '.ignore-files' and will be ignored!</en>
     <en id="Dir_Search_Is_Pointless">This search is pointless! Because your directory that you search is in '.ignore-folders' and will be ignored!</en>
     <en id="Not_An_MD5_Hash">This isn't an MD5 hash! An MD5 hash has a length of 32 characters!</en>
     <en id="Not_An_SHA1_Hash">This isn't an SHA1 hash! An SHA1 hash has a length of 40 characters!</en>
     <en id="Not_An_SHA256_Hash">This isn't an SHA256 hash! An SHA256 hash has a length of 64 characters!</en>
+    <en id="Only_One_Scan">You can't enable other scan's! Only one.</en>
 
     <!-- WORDS -->
     <en id="Word_Progress">Progress</en>

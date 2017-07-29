@@ -20,6 +20,9 @@ import os, sys, codecs
 from lib import var, func
 from lib.lang.lang import *
 
+                        #                                                                       #
+                        #   I WANT TO RE-WRITE THIS CLASS BECAUSE THIS CODE IS VERY CONFUSING   #
+                        #                                                                       #
 
 def scan(searchFor, path, MD5scan, dirScan, lowerCase, readFiles, sha1Scan, sha256):
     isNormal = func.isNormal(MD5scan, dirScan, readFiles, sha1Scan, sha256)
