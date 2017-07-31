@@ -28,6 +28,14 @@ ITALIC = '\033[3m'
 STRIKE = '\033[29m'
 UNDERLINE = '\033[4m'
 
+# --------------------------
+_VERSION = "DEV_1.7"
+_AUTHOR = "Mondei1"
+# --------------------------
+
+# scan.py will set this value to TRUE when it start's the scan
+inScan = False
+
 # If phase 1 is skipped with CTRL+C
 skipped = False
 
@@ -56,7 +64,7 @@ words_readed = 0
 words_total = 0
 # --------------------------
 # This blacklist is for files, where the program can't calculate the MD5 hash!
-blacklist = { "steam.pipe" }
+blacklist = [ "steam.pipe" ]
 # --------------------------
 # The program will ignore these files/folders
 ignore_Files = []

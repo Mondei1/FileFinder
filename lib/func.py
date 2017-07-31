@@ -16,23 +16,24 @@ This program search for files or folders, based on the filename or MD5 hash
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from lib import var
+from lib.lang.lang import *
 import hashlib
 from functools import partial
 
 def getPercent():
     if var.skipped:
-        return "UNKNOWN"
+        return getByID("Word_Unknown")
     else:
         return repr(round((var.files_scanned / var.all_files) * 100, 2))
 def getPercent_readScan():
     if var.skipped:
-        return "UNKNOWN"
+        return getByID("Word_Unknown")
     else:
         return repr(round((var.words_readed / var.words_total) * 100, 2))
 
 def getPercent_dirScan():
     if var.skipped:
-        return "UNKNOWN"
+        return getByID("Word_Unknown")
     else:
         return repr(round((var.dirs_scanned / var.dirs_total) * 100, 2))
 
@@ -85,3 +86,22 @@ def isNormal(MD5scan, dirScan, readFiles, sha1Scan, sha256):
     elif sha256:
         boolean = False
     return boolean
+
+# This function is called when the program get killed by STRG+C or by sys.exit(0)
+def onQuit():
+    if var.inScan:
+        if var.founded.__len__() > 0:
+            print(getByID("Word_Files") + "(%s)" % var.founded.__len__() + ":")
+            for found in var.founded:
+                print("- " + found)
+
+        if var.dirs.__len__() > 0:
+            print("\n" + getByID("Word_Dirs") + " (" + str(len(var.dirs)) + "):")
+            for dir in var.dirs:
+                sys.stdout.write("- " + dir + "\n")
+
+        if var.skipped_files.__len__() > 0:
+            print("\n")
+            print(getByID("Word_Skipped_Files") + "(%s)" % var.skipped_files.__len__() + ":")
+            for skipped in var.skipped_files:
+                print("- " + skipped)

@@ -18,6 +18,7 @@ This program search for files or folders, based on the filename or MD5 hash
 import glob
 import readline
 import sys
+import atexit
 
 try:
     from lib.scan import scan
@@ -25,12 +26,15 @@ try:
     from lib.func import *
     from lib.lang.lang import *
 except ImportError:
-    print("\033[1mPlease run this script with python3 or higher! (Tested under python3.5 under Linux)\033[0m")
+    print("\033[1mPlease run this script with python3 or higher! (Tested with python3.5 under Linux)\033[0m")
     sys.exit(0)
 
 # Auto-Complete
 def complete(text, state):
     return (glob.glob(text + '*' + "/") + [None])[state]
+
+# Set atexit
+atexit.register(onQuit)
 
 isMD5 = False
 isDirScan = False
@@ -42,7 +46,6 @@ isSHA256 = False
 if sys.argv.__contains__("-help") or sys.argv.__contains__("?"):
     print(getByID("Help"))
     sys.exit(0)
-
 if sys.argv.__contains__("-md5"):
     if sys.argv.__contains__("-l") or sys.argv.__contains__("-dir") or sys.argv.__contains__("-r"):
         print(RED + BOLD + getByID("Only_One_Scan") + ENDC)
@@ -56,6 +59,76 @@ if sys.argv.__contains__("-sha256"):
         print(RED + BOLD + getByID("Only_One_Scan") + ENDC)
         sys.exit(0)
 
+# Search over command line
+if sys.argv.__len__() > 2:
+    args = sys.argv
+    if str(args[1]).lower() == "-md5":
+        isMD5 = True
+        if not str(args[2]).lower() == "":
+            if len(args[2]) < 32 or len(args[2]) > 32:
+                print(RED + getByID("Not_An_MD5_Hash") + ENDC)
+                sys.exit(0)
+            if str(args[3]) == "":
+                args[3] = "/"
+            else:
+                scan(args[2], args[3], MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles,
+                     sha1Scan=isSha1, sha256=isSHA256)
+                print("")
+                sys.exit(0)
+    if str(args[1]).lower() == "-sha1":
+        isSha1 = True
+        if not str(args[2]).lower() == "":
+            if len(args[2]) < 40 or len(args[2]) > 40:
+                print(RED + getByID("Not_An_SHA1_Hash") + ENDC)
+                sys.exit(0)
+            else:
+                scan(args[2], args[3], MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles,
+                     sha1Scan=isSha1, sha256=isSHA256)
+                print("")
+                sys.exit(0)
+    if str(args[1]).lower() == "-sha256":
+        isSHA256 = True
+        if not str(args[2]).lower() == "":
+            if len(args[2]) < 64 or len(args[2]) > 64:
+                print(RED + getByID("Not_An_SHA256_Hash") + ENDC)
+                sys.exit(0)
+            else:
+                scan(args[2], args[3], MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles,
+                     sha1Scan=isSha1, sha256=isSHA256)
+                print("")
+                sys.exit(0)
+    if str(args[1]).lower() == "-dir":
+        isDirScan = True
+        if args[2] == "-l":
+            isLowerCase = False
+            scan(args[3], args[4], MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles,
+                 sha1Scan=isSha1, sha256=isSHA256)
+        else:
+            scan(args[2], args[3], MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles,
+                 sha1Scan=isSha1, sha256=isSHA256)
+        print("")
+        sys.exit(0)
+    if str(args[1]).lower() == "-r":
+        isReadFiles = True
+        if args[2] == "-l":
+            isLowerCase = False
+            scan(args[3], args[4], MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles,
+                 sha1Scan=isSha1, sha256=isSHA256)
+        else:
+            scan(args[2], args[3], MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles,
+                 sha1Scan=isSha1, sha256=isSHA256)
+        print("")
+        sys.exit(0)
+    if str(args[1]).lower() == "-fn":
+        if args[2] == "-l":
+            isLowerCase = False
+            scan(args[3], args[4], MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles,
+                 sha1Scan=isSha1, sha256=isSHA256)
+        else:
+            scan(args[2], args[3], MD5scan=isMD5, dirScan=isDirScan, lowerCase=isLowerCase, readFiles=isReadFiles,
+                 sha1Scan=isSha1, sha256=isSHA256)
+        print("")
+        sys.exit(0)
 print("")
 print(OKBLUE + "     /$$$$$$$$ /$$ /$$             " + BOLD + "    /$$$$$$$$ /$$                 /$$                    " + ENDC)
 print(OKBLUE + "    | $$_____/|__/| $$             " + BOLD + "   | $$_____/|__/                | $$                    " + ENDC)
@@ -66,8 +139,8 @@ print(OKBLUE + "    | $$      | $$| $$| $$_____/   " + BOLD + "   | $$      | $$
 print(OKBLUE + "    | $$      | $$| $$|  $$$$$$$   " + BOLD + "   | $$      | $$| $$  | $$|  $$$$$$$|  $$$$$$$| $$      " + ENDC)
 print(OKBLUE + "    |__/      |__/|__/ \_______/   " + BOLD + "   |__/      |__/|__/  |__/ \_______/ \_______/|__/      " + ENDC)
 print("                                                                                        ")
-print(BOLD + "By Mondei1")
-print("Version is DEV_1.6.1\n" + ENDC)
+print(BOLD + "By " + var._AUTHOR)
+print("Version is " + var._VERSION + "\n" + ENDC)
 
 # Set ignored files/folders
 try:
@@ -84,6 +157,8 @@ try:
             ignore_Folders.append(line)
 except FileNotFoundError:
     pass
+
+
 # Set Auto-Complete
 readline.set_completer_delims(' \t\n;')
 readline.parse_and_bind("tab: complete")

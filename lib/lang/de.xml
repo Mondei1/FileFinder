@@ -27,13 +27,24 @@
     <!-- HELP -->
     <de id="Help">Hier ist eine Liste von Argumenten:
 Syntax: python3.5 main.py [ARGUMENT]
-Argumente:
-  -help OR ?  --> Um das hier zu sehen.
+
+Wenn du alle Scan's direkt über die Befehlszeile starten möchtest:
+        For MD5/SHA1/SHA256: python3.5 main.py [MODE] [HASH] [PFAD]
+        For Folder scan:     python3.5 main.py -dir (-l) [NAME] [PFAD]
+        For Filename scan:   python3.5 main.py -fn (-l) [NAME] [PFAD]
+        For read-line scan:  python3.5 main.py -r (-l) [WORT] [PFAD]
+
+        Beispiele: python3.5 main.py -md5 82132eccb284b7e43eadbced823d1d40 /home
+                   python3.5 main.py -dir -l FileFinder /home
+                   python3.5 main.py -fn -l index.html /var
+                   python3.5 main.py -r hello /home
+Modi:
   -md5        --> Um eine Datei basierent auf ihren MD5 Hash zu suchen.
   -sha1       --> Um eine Datei basierent auf ihren SHA1 Hash zu suchen.
   -sha256     --> Um eine Datei basierent auf ihren SHA256 Hash zu suchen.
   -l          --> Das Programm wird dann den Dateinamen nicht in
                   Kleinbuchstaben umwandeln.
+  -fn         --> Normaler scan, basierend auf den Dateinamen.
   -dir        --> Zeigt dir Ordner mit dem Namen.
   -r          --> Suche hiermit nach Wörtern in jeder Datei.
 
@@ -59,4 +70,5 @@ Argumente:
     <de id="Word_Skipped_Files">Übersprungene Dateien</de>
     <de id="Word_Text">Text</de>
     <de id="No_Permissions">Keine Rechte</de>
+    <de id="Word_Unknown">UNBEKANNT</de>
 </lang>

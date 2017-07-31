@@ -26,18 +26,30 @@
 
     <!-- HELP -->
     <en id="Help">Here a an list of arguments:
-Syntax: python3.5 main.py [ARGUMENT]
-Arguments:
-  -help OR ?  --> to see this
+Syntax: python3.5 main.py [MODE]
+
+If you want to start the scan's directly over the command line:
+        For MD5/SHA1/SHA256: python3.5 main.py [MODE] [HASH] [PATH]
+        For Folder scan:     python3.5 main.py -dir (-l) [NAME] [PATH]
+        For Filename scan:   python3.5 main.py -fn (-l) [NAME] [PATH]
+        For read-line scan:  python3.5 main.py -r (-l) [WORD] [PATH]
+
+        Examples: python3.5 main.py -md5 82132eccb284b7e43eadbced823d1d40 /home
+                  python3.5 main.py -dir -l FileFinder /home
+                  python3.5 main.py -fn -l index.html /var
+                  python3.5 main.py -r hello /home
+
+Modes:
   -md5        --> To start the file scan based on one MD5 hash.
   -sha1       --> To start the file scan based on one sha1 hash.
   -sha256     --> To start the file scan based on one sha256 hash.
+  -fn         --> Normal scan, based on filename.
   -l          --> The program will not lower case your file name.
   -dir        --> Show's you folders and files with the filename.
   -r          --> This will read and scan the content of every file
 
   You can create a file with the name '.ignore-files' to skip files.
-  And you can create a file with the name '.ignore-folders' to skip folders.
+  You can also create a file with the name '.ignore-folders' to skip folders.
   Write only one name in every line!
     </en>
 
@@ -58,4 +70,5 @@ Arguments:
     <en id="Word_Skipped_Files">Skipped files</en>
     <en id="Word_Text">Text</en>
     <en id="No_Permissions">No permissions</en>
+    <en id="Word_Unknown">UNKNOWN</en>
 </lang>

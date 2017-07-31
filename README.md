@@ -15,7 +15,8 @@ This program ist licenced under the **GPL-3.0**, read LICENCE for more, or click
 
 ## But what does this software?
 This program can only find files based on the file name or on his MD5 number. You can also search for folders.
-But is something not working please write me via E-Mail (`emailchecker000@gmail.com`) or create an pull request with the fix.
+But is something not working please write me via E-Mail (`emailchecker000@gmail.com`), create an pull request with the fix
+or create an issue on GitHub.
 
 ## Stable version
 **None!** Every version is an developer build and can be very unstable. But some scan's work pretty good!
